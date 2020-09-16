@@ -17,6 +17,7 @@ const ListComponent = ({avatar, color, scrollToY, getScroll}) => {
   const initialValue = useSharedValue(0);
   const y = useSharedValue(componentHeight);
   const initialScroll = useSharedValue(0);
+  const initialOffset = useSharedValue(0);
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (event, ctx) => {
@@ -57,11 +58,14 @@ const ListComponent = ({avatar, color, scrollToY, getScroll}) => {
               y.value = initialValue.value * event.nativeEvent.zoomScale;
               if (initialScroll.value === -1) {
                 initialScroll.value = getScroll();
+                initialOffset.value =
+                  initialValue.value * (event.nativeEvent.zoomScale - 1);
               } else {
                 scrollToY(
                   initialScroll.value +
                     (initialValue.value * (event.nativeEvent.zoomScale - 1)) /
-                      2,
+                      2 -
+                    initialOffset.value / 2,
                 );
               }
             }
