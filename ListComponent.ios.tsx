@@ -50,8 +50,8 @@ const ListComponent = ({avatar, color, scrollToY, getScroll}) => {
         <AutoHeightWebView
           incognito={true}
           onSizeUpdated={(size) => {
-            initialValue.value = size.height;
-            y.value = size.height;
+            initialValue.value = size.height + 20;
+            y.value = size.height + 20;
           }}
           onScroll={(event) => {
             if (y.value !== initialValue.value * event.nativeEvent.zoomScale) {
