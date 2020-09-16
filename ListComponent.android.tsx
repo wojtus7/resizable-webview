@@ -1,44 +1,32 @@
 import 'react-native-gesture-handler';
-import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Button,
-  Pressable,
-  Dimensions,
-  Platform,
-} from 'react-native';
-import {
-  PanGestureHandler,
-  TapGestureHandler,
-  LongPressGestureHandler,
-  PinchGestureHandler,
-} from 'react-native-gesture-handler';
-
+import React from 'react';
 import Animated, {
   useSharedValue,
-  withTiming,
   useAnimatedStyle,
   useAnimatedGestureHandler,
-  Easing,
-  withSpring,
 } from 'react-native-reanimated';
-import {WebView} from 'react-native-webview';
+import AutoHeightWebView from 'react-native-autoheight-webview';
+import {
+  PinchGestureHandler,
+  TapGestureHandler,
+} from 'react-native-gesture-handler';
 
-const componentHeight = 150;
+const componentHeight = 140;
 
-const ListComponent = ({avatar, color}) => {
-  const duringInteraction = useSharedValue(false);
-  const scale = useSharedValue(1);
+const ListComponent = ({avatar, color, scrollToY, getScroll}) => {
+  const initialValue = useSharedValue(0);
   const y = useSharedValue(componentHeight);
-  const transX = useSharedValue(0);
-
-  let [info, setInfo] = useState('');
+  const initialScroll = useSharedValue(0);
+  const initialOffset = useSharedValue(0);
   let androidInitialHeight = 0;
+
+  const gestureHandler = useAnimatedGestureHandler({
+    onStart: (event, ctx) => {
+      initialScroll.value = -1;
+    },
+    onActive: (event, ctx) => {},
+    onEnd: (event, ctx) => {},
+  });
 
   const menuStyle = useAnimatedStyle(() => {
     return {
@@ -46,42 +34,41 @@ const ListComponent = ({avatar, color}) => {
     };
   });
 
-  const wrapperStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        // {translateX: transX.value},
-        {scale: y.value / componentHeight},
-      ],
-    };
-  });
-
   return (
-    <Animated.View
-      style={[
-        {
-          margin: 30,
-          width: 300,
-          backgroundColor: color,
-          justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden',
-        },
-        menuStyle,
-      ]}>
-      <Animated.View>
-        <WebView
-          scrollEnabled={false}
+    <TapGestureHandler onGestureEvent={gestureHandler}>
+      <Animated.View
+        style={[
+          {
+            width: '100%',
+            marginVertical: 30,
+            backgroundColor: color,
+            justifyContent: 'center',
+            alignItems: 'center',
+            overflow: 'hidden',
+          },
+          menuStyle,
+        ]}>
+        <AutoHeightWebView
+          incognito={true}
+          onSizeUpdated={(size) => {
+            initialValue.value = size.height;
+            y.value = size.height;
+          }}
           onScroll={(event) => {
-            console.log(
-              event.nativeEvent.contentSize.width -
-                event.nativeEvent.contentOffset.y,
-            );
             if (androidInitialHeight) {
               y.value =
-                componentHeight *
+                initialValue.value *
                 ((event.nativeEvent.contentSize.width -
                   event.nativeEvent.contentOffset.y) /
                   androidInitialHeight);
+              if (initialScroll.value === -1) {
+                initialScroll.value = getScroll();
+                initialOffset.value = y.value / 2;
+              } else {
+                scrollToY(
+                  initialScroll.value + y.value / 2 - initialOffset.value,
+                );
+              }
             } else {
               androidInitialHeight = event.nativeEvent.contentSize.width;
             }
@@ -89,11 +76,10 @@ const ListComponent = ({avatar, color}) => {
           source={{
             uri: 'https://wojtus7.github.io',
           }}
-          style={{height: 200, width: 300}}
-          scalesPageToFit={false}
+          style={{width: 370}}
         />
       </Animated.View>
-    </Animated.View>
+    </TapGestureHandler>
   );
 };
 
