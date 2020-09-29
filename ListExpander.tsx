@@ -8,7 +8,8 @@ const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
 const ListExpander = () => {
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef(null);
+  const [enabled, setEnabled] = useState(true);
   let scroll = 0;
 
   const scrollToY = (y) => {
@@ -25,6 +26,8 @@ const ListExpander = () => {
     <ScrollView
       ref={scrollRef}
       scrollEventThrottle={16}
+      scrollEnabled={enabled}
+      pinchGestureEnabled={false}
       onScroll={(event) => {
         scroll = event.nativeEvent.contentOffset.y;
       }}
@@ -44,6 +47,7 @@ const ListExpander = () => {
           <ListComponent
             scrollToY={scrollToY}
             getScroll={getScroll}
+            setScrollEnabled={setEnabled}
             {...thing}
           />
         );
