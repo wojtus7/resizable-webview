@@ -18,14 +18,15 @@ const ListComponent = ({
   avatar,
   color,
   scrollToY,
-  getScroll,
+  scroll,
   setScrollEnabled,
+  aaaKey,
 }) => {
   const initialValue = useSharedValue(0);
   const initialWidth = useSharedValue(0);
-  const y = useSharedValue(0);
   const initialScroll = useSharedValue(0);
-  const initialOffset = useSharedValue(0);
+  const currentKey = useSharedValue(aaaKey);
+  const y = useSharedValue(0);
 
   const eventsCount = useRef({
     number: 0,
@@ -34,12 +35,15 @@ const ListComponent = ({
   const incrementEventsCount = () => {
     if (eventsCount.current.number === 0) {
       setScrollEnabled(false);
+      if (!currentKey.value === aaaKey) {
+        initialScroll.value = scroll.current.scroll;
+        currentKey.value = aaaKey;
+      }
     }
     eventsCount.current.number = eventsCount.current.number + 1;
   };
 
   const decrementEventsCount = () => {
-    console.log(eventsCount.current.number);
     eventsCount.current.number = eventsCount.current.number - 1;
     if (eventsCount.current.number === 0) {
       setScrollEnabled(true);
@@ -50,6 +54,10 @@ const ListComponent = ({
     return {
       height: y.value,
     };
+  });
+
+  const webViewState = useRef({
+    height: 0,
   });
 
   const View = useMemo(
@@ -72,19 +80,30 @@ const ListComponent = ({
           onSizeUpdated={(size) => {
             initialValue.value = size.height;
             initialWidth.value = size.width;
+            // initialScroll.value = scroll.current.getScroll();
             y.value = size.height;
+            webViewState.current = {
+              scroll: scroll.current.scroll,
+              height: size.height,
+            };
           }}
           onScroll={(event) => {
-            // setTimeout(() => {
             incrementEventsCount();
-            // }, 0);
             setTimeout(() => {
               decrementEventsCount();
             }, 200);
-            y.value =
+            const webViewHeightToSet =
               initialValue.value *
               (event.nativeEvent.contentSize.width / initialWidth.value);
-            scrollToY(initialScroll.value + y.value / 2 - initialOffset.value);
+            const scrollToSet =
+              scroll.current.scroll -
+              (y.value - webViewState.current.height) / 2;
+            console.log(webViewHeightToSet, scrollToSet);
+            y.value = webViewHeightToSet;
+            scrollToY(scrollToSet);
+            webViewState.current = {
+              height: webViewHeightToSet,
+            };
           }}
           source={{
             uri: 'https://wojtus7.github.io',

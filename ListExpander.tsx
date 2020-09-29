@@ -10,7 +10,7 @@ const deviceHeight = Dimensions.get('window').height;
 const ListExpander = () => {
   const scrollRef = useRef(null);
   const [enabled, setEnabled] = useState(true);
-  let scroll = 0;
+  let scroll = useRef({scroll: 0});
 
   const scrollToY = (y) => {
     if (scrollRef?.current) {
@@ -19,7 +19,7 @@ const ListExpander = () => {
   };
 
   const getScroll = () => {
-    return scroll;
+    return scroll.current.scroll;
   };
 
   return (
@@ -28,8 +28,9 @@ const ListExpander = () => {
       scrollEventThrottle={16}
       scrollEnabled={enabled}
       pinchGestureEnabled={false}
+      canCancelContentTouches={false}
       onScroll={(event) => {
-        scroll = event.nativeEvent.contentOffset.y;
+        scroll.current.scroll = event.nativeEvent.contentOffset.y;
       }}
       style={{
         height: deviceHeight,
@@ -45,8 +46,10 @@ const ListExpander = () => {
       {things.map((thing, index) => {
         return (
           <ListComponent
+            key={`${index}`}
+            aaaKey={`${index}`}
             scrollToY={scrollToY}
-            getScroll={getScroll}
+            scroll={scroll}
             setScrollEnabled={setEnabled}
             {...thing}
           />
