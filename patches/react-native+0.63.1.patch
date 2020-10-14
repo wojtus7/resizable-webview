@@ -1,19 +1,38 @@
-diff --git a/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js b/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js
-index 6284822..a1b65b7 100644
---- a/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js
-+++ b/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js
-@@ -21,11 +21,11 @@ import type {
- 
- let ScrollViewNativeComponent;
- if (global.RN$Bridgeless) {
--  registerGeneratedViewConfig('RCTScrollView', ScrollViewViewConfig);
--  ScrollViewNativeComponent = 'RCTScrollView';
+diff --git a/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.android.js b/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.android.js
+new file mode 100644
+index 0000000..a1b65b7
+--- /dev/null
++++ b/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.android.js
+@@ -0,0 +1,32 @@
++/**
++ * Copyright (c) Facebook, Inc. and its affiliates.
++ *
++ * This source code is licensed under the MIT license found in the
++ * LICENSE file in the root directory of this source tree.
++ *
++ * @format
++ * @flow
++ */
++
++'use strict';
++
++const registerGeneratedViewConfig = require('../../Utilities/registerGeneratedViewConfig');
++const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
++import ScrollViewViewConfig from './ScrollViewViewConfig';
++
++import type {
++  ScrollViewNativeProps,
++  ScrollViewNativeComponentType,
++} from './ScrollViewNativeComponentType';
++
++let ScrollViewNativeComponent;
++if (global.RN$Bridgeless) {
 +  registerGeneratedViewConfig('PlaygroundScrollViewManager', ScrollViewViewConfig);
 +  ScrollViewNativeComponent = 'PlaygroundScrollViewManager';
- } else {
-   ScrollViewNativeComponent = requireNativeComponent<ScrollViewNativeProps>(
--    'RCTScrollView',
++} else {
++  ScrollViewNativeComponent = requireNativeComponent<ScrollViewNativeProps>(
 +    'PlaygroundScrollViewManager',
-   );
- }
- 
++  );
++}
++
++export default ((ScrollViewNativeComponent: any): ScrollViewNativeComponentType);
