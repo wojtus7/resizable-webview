@@ -1,54 +1,16 @@
 import 'react-native-gesture-handler';
-import React, {useState, useEffect, useMemo, useRef} from 'react';
-import {View} from 'react-native';
+import React, {useMemo, useRef} from 'react';
+import {StyleSheet} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedGestureHandler,
 } from 'react-native-reanimated';
 import AutoHeightWebView from 'react-native-autoheight-webview';
-import {
-  PinchGestureHandler,
-  TapGestureHandler,
-} from 'react-native-gesture-handler';
 
-const componentHeight = 140;
-
-const ListComponent = ({
-  avatar,
-  color,
-  scrollToY,
-  scroll,
-  setScrollEnabled,
-  aaaKey,
-}) => {
+const ListComponent = ({avatar, color, scrollToY, scroll, aaaKey}) => {
   const initialValue = useSharedValue(0);
   const initialWidth = useSharedValue(0);
-  const initialScroll = useSharedValue(0);
-  const currentKey = useSharedValue(aaaKey);
   const y = useSharedValue(0);
-
-  const eventsCount = useRef({
-    number: 0,
-  });
-
-  const incrementEventsCount = () => {
-    if (eventsCount.current.number === 0) {
-      setScrollEnabled(false);
-      if (!currentKey.value === aaaKey) {
-        initialScroll.value = scroll.current.scroll;
-        currentKey.value = aaaKey;
-      }
-    }
-    eventsCount.current.number = eventsCount.current.number + 1;
-  };
-
-  const decrementEventsCount = () => {
-    eventsCount.current.number = eventsCount.current.number - 1;
-    if (eventsCount.current.number === 0) {
-      setScrollEnabled(true);
-    }
-  };
 
   const menuStyle = useAnimatedStyle(() => {
     return {
@@ -63,24 +25,13 @@ const ListComponent = ({
   const View = useMemo(
     () => (
       <Animated.View
-        style={[
-          {
-            width: '100%',
-            marginVertical: 30,
-            backgroundColor: color,
-            justifyContent: 'center',
-            alignItems: 'center',
-            overflow: 'hidden',
-          },
-          menuStyle,
-        ]}>
+        style={[styles.container, {backgroundColor: color}, menuStyle]}>
         <AutoHeightWebView
           scrollEnabled={false}
           showHorizontalScrollIndicator={false}
           onSizeUpdated={(size) => {
             initialValue.value = size.height;
             initialWidth.value = size.width;
-            // initialScroll.value = scroll.current.getScroll();
             y.value = size.height;
             webViewState.current = {
               scroll: scroll.current.scroll,
@@ -88,10 +39,6 @@ const ListComponent = ({
             };
           }}
           onScroll={(event) => {
-            incrementEventsCount();
-            setTimeout(() => {
-              decrementEventsCount();
-            }, 200);
             const webViewHeightToSet =
               initialValue.value *
               (event.nativeEvent.contentSize.width / initialWidth.value);
@@ -117,5 +64,15 @@ const ListComponent = ({
 
   return View;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    marginVertical: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+});
 
 export default ListComponent;

@@ -26,7 +26,6 @@ const ListExpander = () => {
     <ScrollView
       ref={scrollRef}
       scrollEventThrottle={16}
-      scrollEnabled={enabled}
       pinchGestureEnabled={false}
       canCancelContentTouches={false}
       onScroll={(event) => {
@@ -50,7 +49,6 @@ const ListExpander = () => {
             aaaKey={`${index}`}
             scrollToY={scrollToY}
             scroll={scroll}
-            setScrollEnabled={setEnabled}
             {...thing}
           />
         );

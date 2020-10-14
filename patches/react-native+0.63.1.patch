@@ -1,0 +1,19 @@
+diff --git a/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js b/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js
+index 6284822..a1b65b7 100644
+--- a/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js
++++ b/node_modules/react-native/Libraries/Components/ScrollView/ScrollViewNativeComponent.js
+@@ -21,11 +21,11 @@ import type {
+ 
+ let ScrollViewNativeComponent;
+ if (global.RN$Bridgeless) {
+-  registerGeneratedViewConfig('RCTScrollView', ScrollViewViewConfig);
+-  ScrollViewNativeComponent = 'RCTScrollView';
++  registerGeneratedViewConfig('PlaygroundScrollViewManager', ScrollViewViewConfig);
++  ScrollViewNativeComponent = 'PlaygroundScrollViewManager';
+ } else {
+   ScrollViewNativeComponent = requireNativeComponent<ScrollViewNativeProps>(
+-    'RCTScrollView',
++    'PlaygroundScrollViewManager',
+   );
+ }
+ 

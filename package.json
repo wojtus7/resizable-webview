@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "postinstall": "patch-package",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
@@ -25,6 +26,8 @@
     "eslint": "^7.5.0",
     "jest": "^26.1.0",
     "metro-react-native-babel-preset": "^0.60.0",
+    "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {
